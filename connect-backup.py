@@ -36,22 +36,52 @@ for instance in instances:
     # Writes basic instance config to file
     json_convert_write_file(instance, instance['InstanceAlias']+".instance.config", "w")
 
+### Start of backing up routing profiles
+#### Still to be complete ####
+    routing_profiles_raw = azn_connect.list_routing_profiles(InstanceId=instance['Id'])
+    routing_profiles = routing_profiles_raw['RoutingProfileSummaryList']
+    #pp.pprint(routing_profiles)
+### Start of backing up routing profiles
 
 ### Start of backing up Users
-
     # get list of users in instance
     users_raw = azn_connect.list_users(InstanceId=instance['Id'])
     users = users_raw['UserSummaryList']
 
     # go through each of the users
     user_num = 1
+    # create csv file and add columns
+    user_f = open(instance['InstanceAlias']+".users.csv", "w")
+    user_f.write("first name,last name,user login,routing profile name,security_profile_name_1|security_profile_name_2,phone type (soft/desk),phone number,soft phone auto accept (yes/no),ACW timeout (seconds)\n")
+
     for user in users:
         # get details of user config
         user_raw = azn_connect.describe_user(UserId=user['Id'], InstanceId=instance['Id'])
         user = user_raw['User']
-        # write user config to file
+        # write json user config to file
         json_convert_write_file(user, instance['InstanceAlias']+".user" + str(user_num) +".config", "w")
         user_num = user_num + 1
+        ## prepare user details for CSV
+        user_indentity = user['IdentityInfo']
+        user_phone_config = user['PhoneConfig']
+        # convert ID's to names for CSV file
+        for routing_profile in routing_profiles:
+            if routing_profile['Id'] == user['RoutingProfileId']:
+                user.update({'RoutingProfileId': routing_profile['Name']}) 
+        
+        # write to csv file
+        #pp.pprint(user)
+        user_f.write( user_indentity['FirstName']+","+ \
+                      user_indentity['LastName']+","+ \
+                      user['Username']+","+ \
+                      user['RoutingProfileId']+","+ \
+                      #### NEED TO SORT OUT Security profile causes error due to list ####
+                      user['SecurityProfileIds']+","+ \
+                      user_phone_config['PhoneType']+","+ \
+                      user_phone_config['DeskPhoneNumber']+","+ \
+                      str(user_phone_config['AutoAccept'])+","+ \
+                      str(user_phone_config['AfterContactWorkTimeLimit'])+"\n")
     print("Number of users backed up : "+ str(user_num-1))
+    user_f.close()
 
 ### End of backing up Users
