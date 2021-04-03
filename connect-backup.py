@@ -52,26 +52,26 @@ for instance in instances:
     print("Number of Instance Storage config backed up : "+ str(storage_num))
 ### end of backing up Instance Storage
 
-### start of backing up Quick Contacts
-    q_contacts_raw = azn_connect.list_quick_connects(InstanceId=instance['Id'])
-    q_contacts = q_contacts_raw['QuickConnectSummaryList']
+### start of backing up Quick connects
+    q_connects_raw = azn_connect.list_quick_connects(InstanceId=instance['Id'])
+    q_connects = q_connects_raw['QuickConnectSummaryList']
     #set some variables for later use
-    q_contact_num = 1
-    q_contacts_output = {}
-    # got through quick contacts
-    for q_contact in q_contacts:
-        q_contact_raw = azn_connect.describe_quick_connect(InstanceId=instance['Id'], QuickConnectId=q_contact['Id'])
-        q_contact = q_contact_raw['QuickConnect']        
+    q_connect_num = 1
+    q_connects_output = {}
+    # got through quick connects
+    for q_connect in q_connects:
+        q_connect_raw = azn_connect.describe_quick_connect(InstanceId=instance['Id'], QuickConnectId=q_connect['Id'])
+        q_connect = q_connect_raw['QuickConnect']        
         # add queue to queue json output        
-        q_contact_output = {'q_contact'+str(q_contact_num) : q_contact}
-        q_contacts_output.update(q_contact_output)
-        q_contact_num = q_contact_num + 1
+        q_connect_output = {'q_connect'+str(q_connect_num) : q_connect}
+        q_connects_output.update(q_connect_output)
+        q_connect_num = q_connect_num + 1
     
     # Write json queue config to file
-    json_convert_write_file(q_contacts_output, instance['InstanceAlias']+".quick_contacts.config", "w")
-    print("Number of Quick Contacts backed up : "+ str(q_contact_num-1))
+    json_convert_write_file(q_connects_output, instance['InstanceAlias']+".quick_connects.config", "w")
+    print("Number of Quick connects backed up : "+ str(q_connect_num-1))
 
-### end of backing up Quick Contacts
+### end of backing up Quick connects
 
 ### Start of backing up Queues
     queues_raw = azn_connect.list_queues(InstanceId=instance['Id'])
