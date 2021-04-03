@@ -1,6 +1,6 @@
 import boto3
 import json
-import pprint
+#import pprint
 import datetime
 
 # Function that is used when converting to json to sterlise if value is datetime
@@ -17,9 +17,9 @@ def json_convert_write_file(data_to_write, filename, open_option):
     f.close()
 
 ### TEMP used for troubleshooting
-pp = pprint.PrettyPrinter(indent=4)
+#pp = pprint.PrettyPrinter(indent=4)
 
-
+### Start of backing up Instance basics
 azn_connect = boto3.client('connect')
 instances_raw = azn_connect.list_instances()
 # creates a variables that just contains the Instance list
@@ -33,24 +33,114 @@ for instance in instances:
     print("Connect Instance ARN : " + instance['Arn'])
     # Writes basic instance config to file
     json_convert_write_file(instance, instance['InstanceAlias']+".instance.config", "w")
+### End of backing up Instance basics
+
+### Start of backing up Instance Storage
+    storage_types = ['CHAT_TRANSCRIPTS','CALL_RECORDINGS','SCHEDULED_REPORTS','MEDIA_STREAMS','CONTACT_TRACE_RECORDS','AGENT_EVENTS']
+    #set some variables for later use
+    storage_num = 0
+    main_storages_output = {}
+    # go through each storage type
+    for storage_type in storage_types:
+        storages_raw = azn_connect.list_instance_storage_configs(InstanceId=instance['Id'],ResourceType=storage_type)
+        storages = storages_raw['StorageConfigs']
+        storage_type_output = {storage_type : storages}
+        main_storages_output.update(storage_type_output)
+        storage_num = storage_num + len(storages)
+    # Write json instance storage config to file
+    json_convert_write_file(main_storages_output, instance['InstanceAlias']+".instance_storage.config", "w")
+    print("Number of Instance Storage config backed up : "+ str(storage_num))
+### end of backing up Instance Storage
+
+### start of backing up Quick Contacts
+    q_contacts_raw = azn_connect.list_quick_connects(InstanceId=instance['Id'])
+    q_contacts = q_contacts_raw['QuickConnectSummaryList']
+    #set some variables for later use
+    q_contact_num = 1
+    q_contacts_output = {}
+    # got through quick contacts
+    for q_contact in q_contacts:
+        q_contact_raw = azn_connect.describe_quick_connect(InstanceId=instance['Id'], QuickConnectId=q_contact['Id'])
+        q_contact = q_contact_raw['QuickConnect']        
+        # add queue to queue json output        
+        q_contact_output = {'q_contact'+str(q_contact_num) : q_contact}
+        q_contacts_output.update(q_contact_output)
+        q_contact_num = q_contact_num + 1
+    
+    # Write json queue config to file
+    json_convert_write_file(q_contacts_output, instance['InstanceAlias']+".quick_contacts.config", "w")
+    print("Number of Quick Contacts backed up : "+ str(q_contact_num-1))
+
+### end of backing up Quick Contacts
+
+### Start of backing up Queues
+    queues_raw = azn_connect.list_queues(InstanceId=instance['Id'])
+    queues = queues_raw['QueueSummaryList']
+    #set some variables for later use
+    queue_num = 1
+    queues_output = {}
+    # go through queues and only back up standard queues
+    for queue in queues:
+        if queue['QueueType'] == 'STANDARD':
+            queue_raw = azn_connect.describe_queue(InstanceId=instance['Id'], QueueId=queue['Id'])
+            queue = queue_raw['Queue']
+            # add queue to queue json output        
+            queue_output = {'queue'+str(queue_num) : queue}
+            queues_output.update(queue_output)
+            queue_num = queue_num + 1
+    
+    # Write json queue config to file
+    json_convert_write_file(queues_output, instance['InstanceAlias']+".queues.config", "w")
+    print("Number of Queues backed up : "+ str(queue_num-1))
+### End of backing up Queues
+
+### Start of backing up Hours of Operations
+    hoos_raw = azn_connect.list_hours_of_operations(InstanceId=instance['Id'])
+    hoos = hoos_raw['HoursOfOperationSummaryList']
+    #set some variables for later use
+    hoo_num = 1
+    hoos_output = {}
+
+    # go through hours of operations
+    for hoo in hoos:
+        hoo_raw = azn_connect.describe_hours_of_operation(InstanceId=instance['Id'], HoursOfOperationId=hoo['Id'])
+        hoo = hoo_raw['HoursOfOperation']
+        # add hours of operations to hours of operations json output        
+        hoo_output = {'HoO'+str(hoo_num) : hoo}
+        hoos_output.update(hoo_output)
+        hoo_num = hoo_num + 1
+    
+    # Write json queue config to file
+    json_convert_write_file(hoos_output, instance['InstanceAlias']+".hours_of_operation.config", "w")
+    print("Number of Hours of Operations backed up : "+ str(hoo_num-1))
+
+### End of backing up Hours of Operations
 
 ### Start of backing up routing profiles
 #### need routing profiles to backup users to csv ####
     routing_profiles_raw = azn_connect.list_routing_profiles(InstanceId=instance['Id'])
     routing_profiles = routing_profiles_raw['RoutingProfileSummaryList']
+    #set some variables for later use
     routing_profile_num = 1
+    routing_profiles_output = {} 
+
     for routing_profile in routing_profiles:
         # get details of routing profile
         routing_profile_raw = azn_connect.describe_routing_profile(InstanceId=instance['Id'], RoutingProfileId=routing_profile['Id'])
         # strip all non routing profile data from reply
-        routing_profile_output = routing_profile_raw['RoutingProfile']
+        routing_profile = routing_profile_raw['RoutingProfile']
+        # add routing profile to json output
+        routing_profile_output = {'routing_profile'+str(routing_profile_num) : routing_profile}
+        routing_profiles_output.update(routing_profile_output)
         # write routing profile config to file
-        json_convert_write_file(routing_profile_output, instance['InstanceAlias']+".routing_profile." + routing_profile_output['Name'] +".config", "w")
-        routing_profile_num = routing_profile_num + 1 
+        routing_profile_num = routing_profile_num + 1
+    # Write json routing profile to file        
+    json_convert_write_file(routing_profiles_output, instance['InstanceAlias']+".routing_profiles.config", "w") 
     print("Number of Routing Profiles Backed up : "+ str(routing_profile_num-1))
 ### Start of backing up routing profiles
 
 ### Start of backing up security profiles
+#### need security profiles to backup users to csv ####
     # get list of security profiles
     security_profiles_raw = azn_connect.list_security_profiles(InstanceId=instance['Id'])
     security_profiles = security_profiles_raw['SecurityProfileSummaryList']
