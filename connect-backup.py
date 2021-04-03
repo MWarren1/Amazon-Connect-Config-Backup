@@ -16,16 +16,14 @@ def json_convert_write_file(data_to_write, filename, open_option):
     f.write(data_to_write_json)
     f.close()
 
+### TEMP used for troubleshooting
+pp = pprint.PrettyPrinter(indent=4)
 
 
 azn_connect = boto3.client('connect')
 instances_raw = azn_connect.list_instances()
 # creates a variables that just contains the Instance list
 instances = instances_raw['InstanceSummaryList']
-
-### TEMP used for troubleshooting
-pp = pprint.PrettyPrinter(indent=4)
-#pp.pprint(instances)
 
 instances_num = len(instances)
 print("\nNumber of Connect Instances : " + str(instances_num))
