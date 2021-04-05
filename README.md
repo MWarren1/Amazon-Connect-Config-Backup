@@ -16,7 +16,9 @@ Python script to backup the config of a single or all amazon connect instances o
     - single instance backup 
 - Config Backup
     - users - allow user back up for all instances what ever identity management is used
+    - phone numbers
     - external services
+        - app integrations 
         - lambda associations
         - lex associations
         - origins
