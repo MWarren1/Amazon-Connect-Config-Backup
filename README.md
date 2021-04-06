@@ -22,4 +22,5 @@ Python script to backup the config of a single or all amazon connect instances o
         - lambda associations
         - lex associations
         - origins
+    - data streaming
 - Config Restore - Not Started
