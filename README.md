@@ -4,7 +4,7 @@ Python script to backup the config of a single or all amazon connect instances o
 ## What Currently works
 - Config Backup
     - Basic Instance config
-    - Users - JSON and csv output, but only for SAML and connect managed identity management
+    - Users - JSON and CSV output, but only for SAML and connect managed identity management
     - routing profiles
     - security profiles
     - queues
