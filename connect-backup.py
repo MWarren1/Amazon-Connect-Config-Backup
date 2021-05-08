@@ -31,6 +31,8 @@ print("\nNumber of Connect Instances : " + str(instances_num))
 for instance in instances:
     print("\nConnect Instance Alias : " + instance['InstanceAlias'])
     print("Connect Instance ARN : " + instance['Arn'])
+    # created variable used for user backup
+    instance_id_management = instance['IdentityManagementType']
     # Writes basic instance config to file
     json_convert_write_file(instance, instance['InstanceAlias']+".instance.config", "w")
 ### End of backing up Instance basics
@@ -160,8 +162,12 @@ for instance in instances:
     users_output = {}
     # create csv file and add columns
     user_f = open(instance['InstanceAlias']+".users.csv", "w")
-    user_f.write("first name,last name,user login,routing profile name,security_profile_name_1|security_profile_name_2,phone type (soft/desk),phone number,soft phone auto accept (yes/no),ACW timeout (seconds)\n")
-
+    # setup csv output depending on the id management
+    if instance_id_management == 'SAML':
+        user_f.write("first name,last name,user login,routing profile name,security_profile_name_1|security_profile_name_2,phone type (soft/desk),phone number,soft phone auto accept (yes/no),ACW timeout (seconds)\n")
+    if instance_id_management == 'CONNECT_MANAGED':
+        user_f.write("first name,last name,email address,password,user login,routing profile name,security_profile_name_1|security_profile_name_2,phone type (soft/desk),phone number,soft phone auto accept (yes/no),ACW timeout (seconds)\n")
+    # need to add the other connect id management at a later date
     for user in users:
         # get details of user config
         user_raw = azn_connect.describe_user(UserId=user['Id'], InstanceId=instance['Id'])
@@ -197,16 +203,30 @@ for instance in instances:
             user_auto_accept = 'no'
         else:
             user_auto_accept = 'yes'   
-        # write to csv file
-        user_f.write( user_indentity['FirstName']+","+ \
-                      user_indentity['LastName']+","+ \
-                      user['Username']+","+ \
-                      user['RoutingProfileId']+","+ \
-                      user_security_profile_output+","+ \
-                      user_phone_type +","+ \
-                      user_phone_config['DeskPhoneNumber']+","+ \
-                      user_auto_accept+","+ \
-                      str(user_phone_config['AfterContactWorkTimeLimit'])+"\n")
+
+        # write csv output to file depending on the id management
+        if instance_id_management == 'SAML':
+            user_f.write( user_indentity['FirstName']+","+ \
+                          user_indentity['LastName']+","+ \
+                          user['Username']+","+ \
+                          user['RoutingProfileId']+","+ \
+                          user_security_profile_output+","+ \
+                          user_phone_type +","+ \
+                          user_phone_config['DeskPhoneNumber']+","+ \
+                          user_auto_accept+","+ \
+                          str(user_phone_config['AfterContactWorkTimeLimit'])+"\n")
+        if instance_id_management == 'CONNECT_MANAGED':
+            user_f.write( user_indentity['FirstName']+","+ \
+                          user_indentity['LastName']+","+ \
+                          user_indentity['Email']+","+ \
+                          ","+ \
+                          user['Username']+","+ \
+                          user['RoutingProfileId']+","+ \
+                          user_security_profile_output+","+ \
+                          user_phone_type +","+ \
+                          user_phone_config['DeskPhoneNumber']+","+ \
+                          user_auto_accept+","+ \
+                          str(user_phone_config['AfterContactWorkTimeLimit'])+"\n")
     # Write json user config to file
     json_convert_write_file(users_output, instance['InstanceAlias']+".users.config", "w")
     print("Number of users backed up : "+ str(user_num-1))
