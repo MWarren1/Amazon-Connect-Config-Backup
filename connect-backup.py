@@ -186,16 +186,26 @@ for instance in instances:
                 if sec_profile_dectected != 0:
                    user_security_profile_output = user_security_profile_output + "|" 
                 user_security_profile_output =  user_security_profile_output + security_profile['Name']
-                sec_profile_dectected = sec_profile_dectected + 1    
+                sec_profile_dectected = sec_profile_dectected + 1  
+        # converting phone type for csv
+        if user_phone_config['PhoneType'] == 'SOFT_PHONE':
+            user_phone_type = 'soft'
+        else:
+            user_phone_type = 'desk'
+        # converting auto accept for csv
+        if str(user_phone_config['AutoAccept']) == 'FALSE':
+            user_auto_accept = 'no'
+        else:
+            user_auto_accept = 'yes'   
         # write to csv file
         user_f.write( user_indentity['FirstName']+","+ \
                       user_indentity['LastName']+","+ \
                       user['Username']+","+ \
                       user['RoutingProfileId']+","+ \
                       user_security_profile_output+","+ \
-                      user_phone_config['PhoneType']+","+ \
+                      user_phone_type +","+ \
                       user_phone_config['DeskPhoneNumber']+","+ \
-                      str(user_phone_config['AutoAccept'])+","+ \
+                      user_auto_accept+","+ \
                       str(user_phone_config['AfterContactWorkTimeLimit'])+"\n")
     # Write json user config to file
     json_convert_write_file(users_output, instance['InstanceAlias']+".users.config", "w")
