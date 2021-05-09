@@ -16,13 +16,12 @@ def json_convert_write_file(data_to_write, filename, open_option):
     f.write(data_to_write_json)
     f.close()
 
+# connect backup users function
 def connect_backup_users(instance):
     print("\nConnect Instance Alias : " + instance['InstanceAlias'])
     print("Connect Instance ARN : " + instance['Arn'])
     # created variable used for user backup
     instance_id_management = instance['IdentityManagementType']
-### End of backing up Instance basics
-
 
 ### Start of getting routing profiles
     routing_profiles_raw = azn_connect.list_routing_profiles(InstanceId=instance['Id'])
@@ -115,13 +114,7 @@ def connect_backup_users(instance):
     user_f.close()
     print("users also backed up to csv template")
 
-### End of backing up Users
-
-
-
-
-### TEMP used for troubleshooting
-#pp = pprint.PrettyPrinter(indent=4)
+### End of backing up users function
 
 ### Start of backing up Instance basics
 azn_connect = boto3.client('connect')
