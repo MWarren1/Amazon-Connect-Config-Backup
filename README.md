@@ -2,6 +2,7 @@
 Python scripts to backup the config of a single or all amazon connect instances on an aws account:
 - connect-backup.py - backs up all instance config
 - connect-backup-users.py - only backs up users to JSON and CSV output
+- connect-backup-users-lambda.py - aws lambda function backs up users to CSV and uploads to s3 bucket
 - connect-backup-quick-connects.py - only backs up quick connects to JSON output 
 
 ## What Currently works
