@@ -134,6 +134,7 @@ def connect_backup_users(instance):
     return csv_output
 ### End of backing up users function
 
+##### Start of Main lambda function #####
 def lambda_handler(event, context):
     s3_bucket = event['s3_bucket']
     s3_object_prefix = event['s3_object_prefix']
@@ -159,5 +160,5 @@ def lambda_handler(event, context):
             upload_status = upload_file('/tmp/'+csv_output, s3_bucket)
             s3_object = str(datetime_now + csv_output)
         
-        logger.info(instance['InstanceAlias'] +' users: s3://' + s3_object)
-  
+        logger.info(instance['InstanceAlias'] +' users: s3://' + s3_bucket + '/' + s3_object)
+##### End of Main lambda function #####
