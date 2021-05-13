@@ -2,6 +2,14 @@ import boto3
 import argparse
 import csv
 
+
+def delete_quick_connect(instance_id, q_connect_id):
+    response = azn_connect.delete_quick_connect(
+        InstanceId=instance_id,
+        QuickConnectId=q_connect_id
+    )
+    return response
+
 def create_quick_connect(instance_id, name, description,type, phone_number):
     response = azn_connect.create_quick_connect(
         InstanceId=instance_id,
@@ -73,7 +81,7 @@ error_message = ''
 # check both switches are used
 if instance_id == None or import_file == None:
     is_error = True
-    error_message = '\n ***ERROR*** - you need to used both --instance_is and --import_file cli switches'
+    error_message = '\n ***ERROR*** - you need to used both --instance_id and --import_file cli switches'
 else:
     # check import file can be opened
     try:
@@ -111,31 +119,32 @@ else:
         for row in parserreader:
             # check if quick connect already exsists
             exists = False
+            exists_in_row = False
             current_q_connect_num = 1
+            #print(quick_connect_list)
             while current_q_connect_num <= q_connect_num:
                 current_q_connect = quick_connect_list['q_connect'+str(current_q_connect_num)]
-                #print(current_q_connect['Name'])
                 if current_q_connect['Name'] == row[0]:
+                    exists_in_row = True
                     exists = True
+                # check if quick connect exists
+                if exists == True:
+                    # If update quick connects is set to false go print Error and go to next row
+                    if update_q_connects == True:
+                        print(row[0] + ' - Already Exists and will be deleted')
+                        # workout what to do, just delete quick connect? what happens with queues its attached to
+                        delete_quick_connect(instance_id, current_q_connect['QuickConnectId'])
+                        exists = False
                 current_q_connect_num = current_q_connect_num + 1
-            
-            # check if quick connect exists
-            if exists == True:
-                # If update quick connects is set to false go print Error and go to next row
-                if update_q_connects == True:
-                    print(row[0] + ' - Already Exists and will be deleted')
-                    # workout what to do, just delete quick connect? what happens with queues its attached to
-                    print('function to delete quick contact')
-            
-            if update_q_connects == False and exists == True:
+                
+            if update_q_connects == False and exists_in_row == True:
                 print(row[0] + ' - Already Exists')
             else:
                 # check type of quick connect    
                 if row[2] == 'EXTERNAL':
                     quick_connect_details = create_quick_connect(instance_id, row[0], row[1], row[2], row[3])
                     print(row[0] + ' - Has been created!')
-                #print(row)
-                print(quick_connect_details)
+
 
 
 
