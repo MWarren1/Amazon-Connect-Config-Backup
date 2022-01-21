@@ -35,7 +35,7 @@ def connect_backup_users(instance):
 
 ### Start of backing up Users
     # get list of users in instance
-    users_raw = azn_connect.list_users(InstanceId=instance['Id'])
+    users_raw = azn_connect.list_users(InstanceId=instance['Id'], MaxResults=500)
     users = users_raw['UserSummaryList']
 
     #set some variables for later use
