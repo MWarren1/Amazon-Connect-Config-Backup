@@ -17,11 +17,12 @@ def json_convert_write_file(data_to_write, filename, open_option):
     f.close()
 
 ### start of back up quick connects function
-def connect_backup_quick_connects(instance):
+def connect_backup_agent_statuses(instance):
     statuses_raw = azn_connect.list_agent_statuses(InstanceId=instance['Id'])
     print(statuses_raw)
     statuses = statuses_raw['AgentStatusSummaryList']
     #set some variables for later use
+    status_num = 1
     statuses_output = {}
     # got through quick connects
     for status in statuses:
@@ -30,6 +31,7 @@ def connect_backup_quick_connects(instance):
         # add queue to queue json output        
         status_output = {status_name : status_arn}
         statuses_output.update(status_output)
+        status_num = status_num + 1
     # Write json queue config to file
     json_convert_write_file(statuses_output, instance['InstanceAlias']+".agent-statuses.config", "w")
     print("Number of Quick connects backed up : "+ str(status_num-1))
@@ -44,4 +46,4 @@ instances_num = len(instances)
 print("\nNumber of Connect Instances : " + str(instances_num))
 
 for instance in instances:
-    connect_backup_quick_connects(instance)
+    connect_backup_agent_statuses(instance)
