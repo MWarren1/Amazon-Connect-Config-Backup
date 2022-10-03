@@ -29,7 +29,8 @@ resource "aws_lambda_permission" "connect_backup_daily" {
 #*###############*#
 
 locals {
-  weekly_backup_day = "cron(0 1 * * ${var.weekly_backup_day} *)"
+  # weekly_backup_day = "cron(0 1 * * ${var.weekly_backup_day} *)"
+  weekly_backup_day = "cron(0 1 * * SUN *)"
 }
 
 resource "aws_cloudwatch_event_rule" "connect_backup_weekly" {
