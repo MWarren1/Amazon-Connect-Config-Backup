@@ -28,10 +28,14 @@ resource "aws_lambda_permission" "connect_backup_daily" {
 #* Weekly Backup *#
 #*###############*#
 
+locals {
+  weekly_backup_day = "cron(0 1 * * ${var.weekly_backup_day} *)"
+}
+
 resource "aws_cloudwatch_event_rule" "connect_backup_weekly" {
   name                = "connect_backup_weekly-${random_id.rand.dec}"
   description         = "Event Rule for weekly backup of amazon connect config"
-  schedule_expression = "cron(0 1 * * ${var.weekly_backup_day} *)"
+  schedule_expression = local.weekly_backup_day
   tags                = var.parent_tags
 }
 
