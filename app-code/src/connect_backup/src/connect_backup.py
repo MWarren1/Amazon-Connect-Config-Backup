@@ -296,3 +296,10 @@ def lambda_handler(event, context):
         print("users also backed up to csv template")
 
     ### End of backing up Users
+
+if __name__ == "__main__":
+    event = {
+        "backup-type" : "ad-hoc"
+    }
+
+    lambda_handler(event, None)
