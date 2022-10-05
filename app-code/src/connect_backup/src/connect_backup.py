@@ -49,7 +49,7 @@ def lambda_handler(event, context):
     # Initiate boto3 clients
     config = Config(
         retries = {
-            #'max_attempts': 100,
+            'max_attempts': 100,
             'mode': 'adaptive'
             })
     s3 = boto3.client('s3')
