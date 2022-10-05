@@ -17,7 +17,7 @@ resource "aws_lambda_function" "connect_backup" {
   source_code_hash = filebase64sha256("${path.module}/app-code/dist/connect_backup.zip")
   runtime          = "python3.9"
   memory_size      = 128
-  timeout          = 600
+  timeout          = var.lambda_timeout
   environment {
     variables = {
       OUTPUT_S3_BUCKET = aws_s3_bucket.connect_backup.id

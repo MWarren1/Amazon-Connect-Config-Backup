@@ -20,15 +20,21 @@ variable "weekly_backup_day" {
   default     = "SUN"
 }
 
-variable "environment" {
-  type        = string
-  description = "environment"
+variable "lambda_timeout" {
+  type        = number
+  description = "number of seconds before backup lambda will timeout"
+  default     = 600
 }
 
 variable "cloudwatch_log_group_retention" {
   type        = number
   description = "number of days to keep lambda logs"
   default     = 180
+}
+
+variable "environment" {
+  type        = string
+  description = "environment"
 }
 
 variable "parent_tags" {
