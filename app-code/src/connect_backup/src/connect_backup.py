@@ -3,6 +3,7 @@ import json
 #import pprint
 import datetime
 import os
+from botocore.config import Config
 
 # Function that is used when converting to json to sterlise if value is datetime
 def json_datetime_converter(o):
@@ -20,26 +21,39 @@ def json_convert_write_file(data_to_write, filename, open_option):
 
 # Fucntion that uploads config file to s3 bucket
 def s3_upload(filename, backup_type, s3_bucket, boto_s3):
+    
+    current_year = datetime.datetime.now().strftime('%Y')
+    current_month = datetime.datetime.now().strftime('%m')
+    current_day = datetime.datetime.now().strftime('%d')
+    
     source_path = '/tmp/' + filename
-    destination_path = backup_type + '/' + filename
+    destination_path = f'{backup_type}/{current_year}/{current_month}/{current_day}/{filename}'
     boto_s3.upload_file(source_path, s3_bucket, destination_path)
 
 ### TEMP used for troubleshooting
 #pp = pprint.PrettyPrinter(indent=4)
 
 def lambda_handler(event, context):
-    ########## variables grabbed from enviromental variables##########
+    ### getting enviromental variables###
     OUTPUT_S3_BUCKET = os.environ['OUTPUT_S3_BUCKET']
-    ######################################
-    backup_type = event['backup-type']
+    
+    try:
+        backup_type = event['backup-type']
+    except:
+        backup_type = "ad-hoc"
 
     current_date = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
     print('\nBackup Type : ' + backup_type + '    @ ' + current_date)
 
     # Initiate boto3 clients
+    config = Config(
+        retries = {
+            #'max_attempts': 100,
+            'mode': 'adaptive'
+            })
     s3 = boto3.client('s3')
-    azn_connect = boto3.client('connect')
+    azn_connect = boto3.client('connect', config=config)
     ### Start of backing up Instance basics
     instances_raw = azn_connect.list_instances()
     # creates a variables that just contains the Instance list
