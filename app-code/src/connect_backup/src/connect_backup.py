@@ -98,19 +98,23 @@ def lambda_handler(event, context):
     ### end of backing up Instance Storage
 
     ### start of backing up Quick connects
-        q_connects_raw = azn_connect.list_quick_connects(InstanceId=instance['Id'])
-        q_connects = q_connects_raw['QuickConnectSummaryList']
         #set some variables for later use
         q_connect_num = 1
         q_connects_output = {}
-        # got through quick connects
-        for q_connect in q_connects:
-            q_connect_raw = azn_connect.describe_quick_connect(InstanceId=instance['Id'], QuickConnectId=q_connect['Id'])
-            q_connect = q_connect_raw['QuickConnect']
-            # add queue to queue json output
-            q_connect_output = {'q_connect'+str(q_connect_num) : q_connect}
-            q_connects_output.update(q_connect_output)
-            q_connect_num = q_connect_num + 1
+
+        paginator = azn_connect.get_paginator('list_quick_connects')
+        response_iterator = paginator.paginate(InstanceId=instance['Id'])
+
+        for page in response_iterator:
+            q_connects = page['QuickConnectSummaryList']
+            # got through quick connects
+            for q_connect in q_connects:
+                q_connect_raw = azn_connect.describe_quick_connect(InstanceId=instance['Id'], QuickConnectId=q_connect['Id'])
+                q_connect = q_connect_raw['QuickConnect']
+                # add queue to queue json output
+                q_connect_output = {'q_connect'+str(q_connect_num) : q_connect}
+                q_connects_output.update(q_connect_output)
+                q_connect_num = q_connect_num + 1
 
         # Write json queue config to file
         quick_connects_file = current_date+'_'+instance['InstanceAlias']+'.quick_connects.config'
@@ -220,13 +224,10 @@ def lambda_handler(event, context):
     ### End of backing up security profiles
 
     ### Start of backing up Users
-        # get list of users in instance
-        users_raw = azn_connect.list_users(InstanceId=instance['Id'])
-        users = users_raw['UserSummaryList']
-
         #set some variables for later use
         user_num = 1
         users_output = {}
+
         # create csv file and add columns
         users_csv_file = current_date+'_'+instance['InstanceAlias']+'.users.csv'
         user_f = open('/tmp/'+users_csv_file, 'w')
@@ -235,66 +236,77 @@ def lambda_handler(event, context):
             user_f.write('first name,last name,user login,routing profile name,security_profile_name_1|security_profile_name_2,phone type (soft/desk),phone number,soft phone auto accept (yes/no),ACW timeout (seconds)\n')
         if instance_id_management == 'CONNECT_MANAGED':
             user_f.write('first name,last name,email address,password,user login,routing profile name,security_profile_name_1|security_profile_name_2,phone type (soft/desk),phone number,soft phone auto accept (yes/no),ACW timeout (seconds)\n')
-        # need to add the other connect id management at a later date
-        for user in users:
-            # get details of user config
-            user_raw = azn_connect.describe_user(UserId=user['Id'], InstanceId=instance['Id'])
-            user = user_raw['User']
-            ## prepare user details for CSV
-            user_indentity = user['IdentityInfo']
-            user_phone_config = user['PhoneConfig']
-            # convert ID's to names for CSV file
-            for routing_profile in routing_profiles:
-                if routing_profile['Id'] == user['RoutingProfileId']:
-                    user.update({'RoutingProfileId': routing_profile['Name']})
 
-            # add user to user json output
-            user_output = {'user'+str(user_num) : user}
-            users_output.update(user_output)
-            user_num = user_num + 1
-            # converting security profiles for csv file
-            sec_profile_dectected = 0
-            user_security_profile_output = ''
-            for security_profile in security_profiles:
-                if security_profile['Id'] in user['SecurityProfileIds']:
-                    if sec_profile_dectected != 0:
-                        user_security_profile_output = user_security_profile_output + '|'
-                        user_security_profile_output =  user_security_profile_output + security_profile['Name']
-                        sec_profile_dectected = sec_profile_dectected + 1
-            # converting phone type for csv
-            if user_phone_config['PhoneType'] == 'SOFT_PHONE':
-                user_phone_type = 'soft'
-            else:
-                user_phone_type = 'desk'
-            # converting auto accept for csv
-            if str(user_phone_config['AutoAccept']) == 'FALSE':
-                user_auto_accept = 'no'
-            else:
-                user_auto_accept = 'yes'
+        # get list of users in instance
 
-            # write csv output to file depending on the id management
-            if instance_id_management == 'SAML':
-                user_f.write( user_indentity['FirstName']+','+ \
-                            user_indentity['LastName']+','+ \
-                            user['Username']+','+ \
-                            user['RoutingProfileId']+','+ \
-                            user_security_profile_output+','+ \
-                            user_phone_type +','+ \
-                            user_phone_config['DeskPhoneNumber']+','+ \
-                            user_auto_accept+','+ \
-                            str(user_phone_config['AfterContactWorkTimeLimit'])+'\n')
-            if instance_id_management == 'CONNECT_MANAGED':
-                user_f.write( user_indentity['FirstName']+','+ \
-                            user_indentity['LastName']+','+ \
-                            user_indentity['Email']+','+ \
-                            ','+ \
-                            user['Username']+','+ \
-                            user['RoutingProfileId']+','+ \
-                            user_security_profile_output+','+ \
-                            user_phone_type +','+ \
-                            user_phone_config['DeskPhoneNumber']+','+ \
-                            user_auto_accept+','+ \
-                            str(user_phone_config['AfterContactWorkTimeLimit'])+'\n')
+        # get list of users in instance
+        # Create a reusable Paginator
+        paginator = azn_connect.get_paginator('list_users')
+        response_iterator = paginator.paginate(InstanceId=instance['Id'])
+
+        for page in response_iterator:
+            users = page['UserSummaryList']
+
+            # need to add the other connect id management at a later date
+            for user in users:
+                # get details of user config
+                user_raw = azn_connect.describe_user(UserId=user['Id'], InstanceId=instance['Id'])
+                user = user_raw['User']
+                ## prepare user details for CSV
+                user_indentity = user['IdentityInfo']
+                user_phone_config = user['PhoneConfig']
+                # convert ID's to names for CSV file
+                for routing_profile in routing_profiles:
+                    if routing_profile['Id'] == user['RoutingProfileId']:
+                        user.update({'RoutingProfileId': routing_profile['Name']})
+
+                # add user to user json output
+                user_output = {'user'+str(user_num) : user}
+                users_output.update(user_output)
+                user_num = user_num + 1
+                # converting security profiles for csv file
+                sec_profile_dectected = 0
+                user_security_profile_output = ''
+                for security_profile in security_profiles:
+                    if security_profile['Id'] in user['SecurityProfileIds']:
+                        if sec_profile_dectected != 0:
+                            user_security_profile_output = user_security_profile_output + '|'
+                            user_security_profile_output =  user_security_profile_output + security_profile['Name']
+                            sec_profile_dectected = sec_profile_dectected + 1
+                # converting phone type for csv
+                if user_phone_config['PhoneType'] == 'SOFT_PHONE':
+                    user_phone_type = 'soft'
+                else:
+                    user_phone_type = 'desk'
+                # converting auto accept for csv
+                if str(user_phone_config['AutoAccept']) == 'FALSE':
+                    user_auto_accept = 'no'
+                else:
+                    user_auto_accept = 'yes'
+
+                # write csv output to file depending on the id management
+                if instance_id_management == 'SAML':
+                    user_f.write( user_indentity['FirstName']+','+ \
+                                user_indentity['LastName']+','+ \
+                                user['Username']+','+ \
+                                user['RoutingProfileId']+','+ \
+                                user_security_profile_output+','+ \
+                                user_phone_type +','+ \
+                                user_phone_config['DeskPhoneNumber']+','+ \
+                                user_auto_accept+','+ \
+                                str(user_phone_config['AfterContactWorkTimeLimit'])+'\n')
+                if instance_id_management == 'CONNECT_MANAGED':
+                    user_f.write( user_indentity['FirstName']+','+ \
+                                user_indentity['LastName']+','+ \
+                                user_indentity['Email']+','+ \
+                                ','+ \
+                                user['Username']+','+ \
+                                user['RoutingProfileId']+','+ \
+                                user_security_profile_output+','+ \
+                                user_phone_type +','+ \
+                                user_phone_config['DeskPhoneNumber']+','+ \
+                                user_auto_accept+','+ \
+                                str(user_phone_config['AfterContactWorkTimeLimit'])+'\n')
         # Write json user config to file
         users_file = current_date+'_'+instance['InstanceAlias']+'.users.config'
         json_convert_write_file(users_output, '/tmp/'+users_file, 'w')
