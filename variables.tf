@@ -31,7 +31,7 @@ variable "lambda_timeout" {
   default     = 600
 
   validation {
-    condition     = var.weekly_backup_day == "MON" || var.weekly_backup_day == "TUE" || var.weekly_backup_day == "WED" || var.weekly_backup_day == "THU" || var.weekly_backup_day == "FRI" || var.weekly_backup_day == "SAT" || var.weekly_backup_day == "SUN"
+    condition     = lambda_timeout <= 900
     error_message = "The lambda_timeout value needs to be 900 seconds (15 mins) or less"
   }
 }
