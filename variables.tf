@@ -31,7 +31,7 @@ variable "lambda_timeout" {
   default     = 600
 
   validation {
-    condition     = lambda_timeout <= 900
+    condition     = var.lambda_timeout <= 900
     error_message = "The lambda_timeout value needs to be 900 seconds (15 mins) or less"
   }
 }
