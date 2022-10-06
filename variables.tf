@@ -18,12 +18,22 @@ variable "weekly_backup_day" {
   type        = string
   description = "day to do the weekly back up, first 3 letters in caps"
   default     = "SUN"
+
+  validation {
+    condition     = var.weekly_backup_day == "MON" || var.weekly_backup_day == "TUE" || var.weekly_backup_day == "WED" || var.weekly_backup_day == "THU" || var.weekly_backup_day == "FRI" || var.weekly_backup_day == "SAT" || var.weekly_backup_day == "SUN"
+    error_message = "The weekly_backup_day value must be MON, TUE, WED, THU, FRI, SAT or SUN"
+  }
 }
 
 variable "lambda_timeout" {
   type        = number
   description = "number of seconds before backup lambda will timeout"
   default     = 600
+
+  validation {
+    condition     = var.weekly_backup_day == "MON" || var.weekly_backup_day == "TUE" || var.weekly_backup_day == "WED" || var.weekly_backup_day == "THU" || var.weekly_backup_day == "FRI" || var.weekly_backup_day == "SAT" || var.weekly_backup_day == "SUN"
+    error_message = "The lambda_timeout value needs to be 900 seconds (15 mins) or less"
+  }
 }
 
 variable "cloudwatch_log_group_retention" {
