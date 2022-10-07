@@ -4,7 +4,7 @@
 
 locals {
   # This local is used in the lambda and log group resources
-  lambda_function_name = var.environment ? "amazon-connect-backup-${var.environment}-${random_id.rand.dec}" : "amazon-connect-backup-${random_id.rand.dec}"
+  lambda_function_name = var.environment == "" ? "amazon-connect-backup-${var.environment}-${random_id.rand.dec}" : "amazon-connect-backup-${random_id.rand.dec}"
 }
 
 # Lambda function backup amazon connect
