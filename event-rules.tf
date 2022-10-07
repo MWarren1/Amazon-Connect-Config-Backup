@@ -5,7 +5,7 @@
 resource "aws_cloudwatch_event_rule" "connect_backup_daily" {
   name                = "connect_backup_daily-${random_id.rand.dec}"
   description         = "Event Rule for daily backup of amazon connect config"
-  schedule_expression = "cron(0 1 * * ? *)"
+  schedule_expression = "cron(0 ${var.hour_for_backup} * * ? *)"
   tags                = var.parent_tags
 }
 
@@ -31,7 +31,7 @@ resource "aws_lambda_permission" "connect_backup_daily" {
 resource "aws_cloudwatch_event_rule" "connect_backup_weekly" {
   name                = "connect_backup_weekly-${random_id.rand.dec}"
   description         = "Event Rule for weekly backup of amazon connect config"
-  schedule_expression = "cron(0 1 ? * ${var.weekly_backup_day} *)"
+  schedule_expression = "cron(0 ${var.hour_for_backup} ? * ${var.weekly_backup_day} *)"
   tags                = var.parent_tags
 }
 
