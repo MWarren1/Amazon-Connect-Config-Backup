@@ -2,8 +2,14 @@
 #* Amazon Connect Backup Bucket *#
 #*##############################*#
 
+# spliting up bucket name creation to make it easier to read
+locals {
+  bucket_name_prefix = var.s3_name_prefix == "" ? "" : "${var.bucket_name_prefix}-"
+  bucket_name_suffix = var.environment == "" ? "connect-backup-${random_id.rand.dec}" : "connect-backup-${var.environment}-${random_id.rand.dec}"
+}
+
 resource "aws_s3_bucket" "connect_backup" {
-  bucket = "${var.s3_name_prefix}connect-backup-${var.environment}-${random_id.rand.dec}"
+  bucket = "${var. bucket_name_prefix}${var. bucket_name_suffix}"
 
   tags = var.parent_tags
 }
