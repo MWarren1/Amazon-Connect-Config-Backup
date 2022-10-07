@@ -1,6 +1,6 @@
 # create iam role for lambda function
 resource "aws_iam_role" "lambda_role" {
-  name = "lambda-connect-backup-${var.environment}-${random_id.rand.dec}"
+  name = var.environment == "" ? "lambda-connect-backup-${var.environment}-${random_id.rand.dec}" : "lambda-connect-backup-${random_id.rand.dec}"
   path = "/service-role/"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
