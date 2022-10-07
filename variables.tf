@@ -1,6 +1,6 @@
 variable "s3_name_prefix" {
   type        = string
-  description = "prefix to be added to s3 bucket name, should end with -"
+  description = "prefix to be added to s3 bucket name"
   default     = ""
 }
 
@@ -14,6 +14,12 @@ variable "retention_weekly_backups" {
   description = "number of weeks to keep weekly backups"
 }
 
+variable "hour_for_backup" {
+  type        = number
+  description = "hour of the day to run the backup"
+  default = 1
+}
+
 variable "weekly_backup_day" {
   type        = string
   description = "day to do the weekly back up, first 3 letters in caps"
@@ -25,17 +31,6 @@ variable "weekly_backup_day" {
   }
 }
 
-variable "lambda_timeout" {
-  type        = number
-  description = "number of seconds before backup lambda will timeout"
-  default     = 600
-
-  validation {
-    condition     = var.lambda_timeout <= 900
-    error_message = "The lambda_timeout value needs to be 900 seconds (15 mins) or less"
-  }
-}
-
 variable "cloudwatch_log_group_retention" {
   type        = number
   description = "number of days to keep lambda logs"
@@ -44,10 +39,12 @@ variable "cloudwatch_log_group_retention" {
 
 variable "environment" {
   type        = string
-  description = "environment"
+  description = "environment where this module will be deployed"
+  default = ""
 }
 
 variable "parent_tags" {
   type        = map(any)
-  description = "map of tags"
+  description = "map of tags to be applied to all resources"
+  default     = {}
 }
