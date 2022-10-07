@@ -1,7 +1,7 @@
 # TO DO
 
 - lambda permissions - remove permissions 
-- add variable forhour to do backup
+- add cloudwatch alarm and sns topic for backup failures
 
 # Amazon Connect Config Backup
 
@@ -13,7 +13,6 @@ summary of what it creates:
 - IAM role for Lambda
 - Event Rules for daily and weekly jobs  
 - S3 Bucket to store backups
-- SNS Topic for backup failures
 
 ## Configuration
 
