@@ -37,6 +37,18 @@ variable "cloudwatch_log_group_retention" {
   default     = 180
 }
 
+variable "sns-subscription-email" {
+  type        = list(string)
+  description = "list of email addresses to subscribe to sns topic"
+  default = []
+}
+
+variable "sns-subscription-sqs" {
+  type        = list(string)
+  description = "list of sqs queues to subscribe to sns topic"
+  default = []
+}
+
 variable "environment" {
   type        = string
   description = "environment where this module will be deployed"
