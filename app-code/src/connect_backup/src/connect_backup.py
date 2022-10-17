@@ -322,7 +322,7 @@ def lambda_handler(event, context):
         # upload users csv file to s3 bucket
         s3_upload(users_csv_file, backup_type, OUTPUT_S3_BUCKET, s3)
 
-        print('users also backed up to csv template')
+        print('Users Backed up to csv template')
 
     ### End of backing up Users
 
@@ -349,7 +349,7 @@ def lambda_handler(event, context):
                 contact_flow_raw = azn_connect.describe_contact_flow(InstanceId=instance['Id'], ContactFlowId=contact_flow['Id'])
             except:
                 contact_flows_not_backedup.update({contact_flow['Name'] : contact_flow})
-                print("NOT Backed Up - "+contact_flow['Name'])
+                print("Contact Flow NOT Backed Up - "+contact_flow['Name'])
                 get_contact_flow_details = "failed"
 
                 contact_flows_not_backedup_num = contact_flows_not_backedup_num + 1
