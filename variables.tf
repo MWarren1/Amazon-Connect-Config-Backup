@@ -39,13 +39,13 @@ variable "cloudwatch_log_group_retention" {
 
 variable "sns-subscription-email" {
   type        = list(string)
-  description = "list of email addresses to subscribe to sns topic"
+  description = "list of email addresses to subscribe to backup failed sns topic"
   default = []
 }
 
 variable "sns-subscription-sqs" {
   type        = list(string)
-  description = "list of sqs queues to subscribe to sns topic"
+  description = "list of sqs queues to subscribe to backup failed sns topic"
   default = []
 }
 
