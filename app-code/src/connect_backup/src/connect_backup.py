@@ -322,7 +322,7 @@ def lambda_handler(event, context):
         # upload users csv file to s3 bucket
         s3_upload(users_csv_file, backup_type, OUTPUT_S3_BUCKET, s3)
 
-        print('Users Backed up to csv template')
+        print('Users Backed up to CSV and JSON')
 
     ### End of backing up Users
 
