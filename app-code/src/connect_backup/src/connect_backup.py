@@ -324,6 +324,72 @@ def lambda_handler(event, context):
 
     ### End of backing up Users
 
+    ### Start of Backing up Contact Flows
+        contact_flow_types=[
+            'CONTACT_FLOW','CUSTOMER_QUEUE','CUSTOMER_HOLD','CUSTOMER_WHISPER','AGENT_HOLD','AGENT_WHISPER','OUTBOUND_WHISPER','AGENT_TRANSFER','QUEUE_TRANSFER',
+        ]
+        contact_flow_list_raw = azn_connect.list_contact_flows(InstanceId=instance['Id'], ContactFlowTypes=contact_flow_types)
+        contact_flow_list = contact_flow_list_raw['ContactFlowSummaryList']
+
+        #print(contact_flow_list)
+
+        contact_flows_backedup = {}
+        contact_flows_backedup_num = 0
+        contact_flows_not_backedup = {}
+        contact_flows_not_backedup_num = 0
+        # create folder for contact flows
+        os.mkdir("/tmp/contact_flows")
+
+        for contact_flow in contact_flow_list:
+            get_contact_flow_details = "successful"
+            try:
+                contact_flow_raw = azn_connect.describe_contact_flow(InstanceId=instance['Id'], ContactFlowId=contact_flow['Id'])
+                #print(contact_flow_raw)
+
+
+            except:
+                contact_flows_not_backedup.update({contact_flow['Name'] : contact_flow})
+                print("NOT Backed Up - "+contact_flow['Name'])
+                get_contact_flow_details = "failed"
+
+                contact_flows_not_backedup_num = contact_flows_not_backedup_num + 1
+
+            if get_contact_flow_details == "successful":
+                print("Backed Up - "+contact_flow['Name'])
+                contact_flows_backedup.update({contact_flow['Name'] : contact_flow})
+
+                # backup contact flow to xml file
+                contact_flow_xml = contact_flow_raw['ContactFlow']['Content']
+                # write json to file
+                # make contact flow name a useable file name
+                contact_flow_file_safe_name = contact_flow['Name'].replace(" ", "-")
+                contact_flow_file_safe_name = contact_flow_file_safe_name.replace("---", "-")
+                contact_flow_file_safe_name = contact_flow_file_safe_name.replace("--", "-")
+
+                xml_file = "contact_flows/"+current_date+'_'+instance['InstanceAlias']+'.contact_flow.'+contact_flow_file_safe_name+'.xml'
+
+                xml = open('/tmp/'+xml_file, 'w')
+                xml.write(contact_flow_xml)
+                xml.close()
+                
+                # upload contact flow to s3 bucket
+                s3_upload(xml_file, backup_type, OUTPUT_S3_BUCKET, s3)
+
+                contact_flows_backedup_num = contact_flows_backedup_num + 1
+
+        contact_flows_backedup_file = current_date+'_'+instance['InstanceAlias']+'.contact_flows_backedup.config'
+        json_convert_write_file(contact_flows_backedup, '/tmp/'+contact_flows_backedup_file, 'w')
+        contact_flows_not_backedup_file = current_date+'_'+instance['InstanceAlias']+'.contact_flows_not_backedup.config'
+        json_convert_write_file(contact_flows_not_backedup, '/tmp/'+contact_flows_not_backedup_file, 'w')
+
+        s3_upload(contact_flows_backedup_file, backup_type, OUTPUT_S3_BUCKET, s3)
+        s3_upload(contact_flows_not_backedup_file, backup_type, OUTPUT_S3_BUCKET, s3)
+
+        print('Number of Contact Flows Backed up : '+ str(contact_flows_backedup_num))
+        print('Number of Contact Flows NOT Backed up : '+ str(contact_flows_not_backedup_num))
+    ### End of Backing up Contact Flows
+    
+
 if __name__ == '__main__':
     event = {
         'backup-type' : 'ad-hoc'
