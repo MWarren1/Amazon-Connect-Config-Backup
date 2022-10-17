@@ -269,10 +269,12 @@ def lambda_handler(event, context):
                 user_security_profile_output = ''
                 for security_profile in security_profiles:
                     if security_profile['Id'] in user['SecurityProfileIds']:
+                    # adds pipe to user_security_profile_output if this is the 2nd security profile found on the user
                         if sec_profile_dectected != 0:
-                            user_security_profile_output = user_security_profile_output + '|'
-                            user_security_profile_output =  user_security_profile_output + security_profile['Name']
-                            sec_profile_dectected = sec_profile_dectected + 1
+                            user_security_profile_output =  user_security_profile_output +'|'
+                        # adding security profile to security profile output
+                        user_security_profile_output =  user_security_profile_output + security_profile['Name']
+                        sec_profile_dectected = sec_profile_dectected + 1
                 # converting phone type for csv
                 if user_phone_config['PhoneType'] == 'SOFT_PHONE':
                     user_phone_type = 'soft'
@@ -342,11 +344,9 @@ def lambda_handler(event, context):
 
         for contact_flow in contact_flow_list:
             get_contact_flow_details = "successful"
+            # try checks if contact flow is published
             try:
                 contact_flow_raw = azn_connect.describe_contact_flow(InstanceId=instance['Id'], ContactFlowId=contact_flow['Id'])
-                #print(contact_flow_raw)
-
-
             except:
                 contact_flows_not_backedup.update({contact_flow['Name'] : contact_flow})
                 print("NOT Backed Up - "+contact_flow['Name'])
@@ -355,7 +355,6 @@ def lambda_handler(event, context):
                 contact_flows_not_backedup_num = contact_flows_not_backedup_num + 1
 
             if get_contact_flow_details == "successful":
-                print("Backed Up - "+contact_flow['Name'])
                 contact_flows_backedup.update({contact_flow['Name'] : contact_flow})
 
                 # backup contact flow to xml file
