@@ -62,7 +62,6 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
     # sid = "ConnectBackUpConnect${random_id.rand.dec}"
     actions = [
       "connect:ListInstances",
-
     ]
     resources = [
       "*"
@@ -85,8 +84,8 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
       # "*"
     ]
     resources = [
-      "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*",
-      # "*"
+      # "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*",
+      "*"
     ]
   }
   statement {
@@ -97,8 +96,8 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
       # "*"
     ]
     resources = [
-      "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/contact-flow/*"
-      # "*"
+      # "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/contact-flow/*"
+      "*"
     ]
   }
   statement {
@@ -108,8 +107,8 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
       # "*"
     ]
     resources = [
-      "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/agent/*"
-      # "*"
+      # "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/agent/*"
+      "*"
     ]
   }
   statement {
@@ -119,8 +118,8 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
       # "*"
     ]
     resources = [
-      "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/routing-profile/*"
-      # "*"
+      # "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/routing-profile/*"
+      "*"
     ]
   }
   statement {
@@ -130,8 +129,8 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
       # "*"
     ]
     resources = [
-      "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/agent-group/*"
-      # "*"
+      # "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/agent-group/*"
+      "*"
     ]
   }
   statement {
@@ -141,8 +140,8 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
       # "*"
     ]
     resources = [
-      "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/transfer-destination/*"
-      # "*"
+      # "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/transfer-destination/*"
+      "*"
     ]
   }
   statement {
@@ -152,8 +151,8 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
       # "*"
     ]
     resources = [
-      "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/operating-hours/*"
-      # "*"
+      # "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/operating-hours/*"
+      "*"
     ]
   }
 }
