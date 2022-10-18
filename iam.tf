@@ -70,27 +70,31 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
   statement {
     # sid = "ConnectBackUpConnect${random_id.rand.dec}"
     actions = [
-      "connect:ListContactFlows",
-      "connect:ListRoutingProfiles",
-      "connect:ListUserHierarchyGroups",
-      "connect:ListUsers",
-      "connect:ListPrompts",
-      "connect:ListHoursOfOperations",
-      "connect:ListQueues",
-      "connect:ListLambdaFunctions",
-      "connect:DescribeUserHierarchyStructure",
-      "connect:DescribeInstance",
-      "connect:DescribeQueue",
+      # "connect:ListContactFlows",
+      # "connect:ListRoutingProfiles",
+      # "connect:ListUserHierarchyGroups",
+      # "connect:ListUsers",
+      # "connect:ListPrompts",
+      # "connect:ListHoursOfOperations",
+      # "connect:ListQueues",
+      # "connect:ListLambdaFunctions",
+      # "connect:DescribeUserHierarchyStructure",
+      # "connect:DescribeInstance",
+      # "connect:DescribeQueue",
 
-      "connect:ListInstanceStorageConfigs",
-      "connect:ListInstances",
-      "connect:DescribeContactFlow",
-      "connect:ListContactFlows",
-      "connect:DescribeUser",
-      "connect:DescribeRoutingProfile",
-      "connect:DescribeUserHierarchyGroup",
-      "connect:ListQuickConnects",
-      "connect:DescribeHoursOfOperation",
+      # "connect:ListInstanceStorageConfigs",
+      # "connect:ListInstances",
+      # "connect:DescribeContactFlow",
+      # "connect:ListContactFlows",
+      # "connect:DescribeUser",
+      # "connect:DescribeRoutingProfile",
+      # "connect:DescribeUserHierarchyGroup",
+      # "connect:ListQuickConnects",
+      # "connect:DescribeQuickConnect",
+      # "connect:DescribeHoursOfOperation",
+      
+      "connect:Describe*",
+      "connect:List*",
       # "*"
     ]
     resources = [
@@ -98,18 +102,17 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
       "*"
     ]
   }
-  # statement {
-  #   # sid = "ConnectBackUpConnect${random_id.rand.dec}"
-  #   actions = [
-  #     "connect:DescribeContactFlow",
-  #     "connect:ListContactFlows",
-  #     # "*"
-  #   ]
-  #   resources = [
-  #     # "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/contact-flow/*"
-  #     "*"
-  #   ]
-  # }
+  statement {
+    # sid = "ConnectBackUpConnect${random_id.rand.dec}"
+    actions = [
+      "ds:DescribeDirectories",
+      # "*"
+    ]
+    resources = [
+      # "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/contact-flow/*"
+      "*"
+    ]
+  }
   # statement {
   #   # sid = "ConnectBackUpConnect${random_id.rand.dec}"
   #   actions = [
