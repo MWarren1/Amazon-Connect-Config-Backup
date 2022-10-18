@@ -62,11 +62,10 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
     # sid = "ConnectBackUpConnect${random_id.rand.dec}"
     actions = [
       "connect:ListInstances",
-      # "*"
+
     ]
     resources = [
-      "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance",
-      # "*"
+      "*"
     ]
   }
   statement {
