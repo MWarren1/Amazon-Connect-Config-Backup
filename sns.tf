@@ -2,7 +2,7 @@
 resource "aws_sns_topic" "topic" {
   count = (length(var.sns-subscription-email)+length(var.sns-subscription-sqs)) > 0 ? 1 : 0
 
-  name_prefix = var.environment == "" ? "amazon-connect-backup-alarm-${var.environment}-" : "amazon-connect-backup-alarm-"
+  name_prefix = var.environment == "" ? "amazon-connect-backup-alarm-" : "amazon-connect-backup-alarm-${var.environment}-"
   tags = var.parent_tags
 }
 

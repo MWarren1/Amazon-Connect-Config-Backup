@@ -1,7 +1,7 @@
 resource "aws_cloudwatch_metric_alarm" "failed_backup" {
   count = (length(var.sns-subscription-email)+length(var.sns-subscription-sqs)) > 0 ? 1 : 0
 
-  alarm_name          = var.environment == "" ? "amazon-connect-backup-alarm-${var.environment}-${random_id.rand.dec}" : "amazon-connect-backup-alarm-${random_id.rand.dec}"
+  alarm_name          = var.environment == "" ? "amazon-connect-backup-alarm-${random_id.rand.dec}" : "amazon-connect-backup-alarm-${var.environment}-${random_id.rand.dec}"
   alarm_description  = "Trigger an alert when amazon connect backup has failed"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "1"
