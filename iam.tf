@@ -82,7 +82,7 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
       "connect:DescribeInstance",
       "connect:DescribeQueue",
 
-      "ListInstanceStorageConfigs",
+      "connect:ListInstanceStorageConfigs",
       "connect:ListInstances",
       "connect:DescribeContactFlow",
       "connect:ListContactFlows",
