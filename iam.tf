@@ -49,7 +49,6 @@ resource "aws_iam_role_policy" "lambda_role_policy_cloudwatch" {
 
 data "aws_iam_policy_document" "lambda_policy_doc" {
   statement {
-    # sid = "ConnectBackUpS3${random_id.rand.dec}"
     actions = [
       "s3:PutObject"
     ]
@@ -58,116 +57,23 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
       "${aws_s3_bucket.connect_backup.arn}/*",
     ]
   }
-  # statement {
-  #   # sid = "ConnectBackUpConnect${random_id.rand.dec}"
-  #   actions = [
-  #     "connect:ListInstances",
-  #   ]
-  #   resources = [
-  #     "*"
-  #   ]
-  # }
   statement {
-    # sid = "ConnectBackUpConnect${random_id.rand.dec}"
     actions = [
-      # "connect:ListContactFlows",
-      # "connect:ListRoutingProfiles",
-      # "connect:ListUserHierarchyGroups",
-      # "connect:ListUsers",
-      # "connect:ListPrompts",
-      # "connect:ListHoursOfOperations",
-      # "connect:ListQueues",
-      # "connect:ListLambdaFunctions",
-      # "connect:DescribeUserHierarchyStructure",
-      # "connect:DescribeInstance",
-      # "connect:DescribeQueue",
-
-      # "connect:ListInstanceStorageConfigs",
-      # "connect:ListInstances",
-      # "connect:DescribeContactFlow",
-      # "connect:ListContactFlows",
-      # "connect:DescribeUser",
-      # "connect:DescribeRoutingProfile",
-      # "connect:DescribeUserHierarchyGroup",
-      # "connect:ListQuickConnects",
-      # "connect:DescribeQuickConnect",
-      # "connect:DescribeHoursOfOperation",
-      
       "connect:Describe*",
       "connect:List*",
-      # "*"
     ]
     resources = [
-      # "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*",
       "*"
     ]
   }
   statement {
-    # sid = "ConnectBackUpConnect${random_id.rand.dec}"
     actions = [
       "ds:DescribeDirectories",
-      # "*"
     ]
     resources = [
-      # "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/contact-flow/*"
       "*"
     ]
   }
-  # statement {
-  #   # sid = "ConnectBackUpConnect${random_id.rand.dec}"
-  #   actions = [
-  #     "connect:DescribeUser",
-  #     # "*"
-  #   ]
-  #   resources = [
-  #     # "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/agent/*"
-  #     "*"
-  #   ]
-  # }
-  # statement {
-  #   # sid = "ConnectBackUpConnect${random_id.rand.dec}"
-  #   actions = [
-  #     "connect:DescribeRoutingProfile",
-  #     # "*"
-  #   ]
-  #   resources = [
-  #     # "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/routing-profile/*"
-  #     "*"
-  #   ]
-  # }
-  # statement {
-  #   # sid = "ConnectBackUpConnect${random_id.rand.dec}"
-  #   actions = [
-  #     "connect:DescribeUserHierarchyGroup",
-  #     # "*"
-  #   ]
-  #   resources = [
-  #     # "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/agent-group/*"
-  #     "*"
-  #   ]
-  # }
-  # statement {
-  #   # sid = "ConnectBackUpConnect${random_id.rand.dec}"
-  #   actions = [
-  #     "connect:ListQuickConnects",
-  #     # "*"
-  #   ]
-  #   resources = [
-  #     # "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/transfer-destination/*"
-  #     "*"
-  #   ]
-  # }
-  # statement {
-  #   # sid = "ConnectBackUpConnect${random_id.rand.dec}"
-  #   actions = [
-  #     "connect:DescribeHoursOfOperation",
-  #     # "*"
-  #   ]
-  #   resources = [
-  #     # "arn:aws:connect:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*/operating-hours/*"
-  #     "*"
-  #   ]
-  # }
 }
 
 resource "aws_iam_policy" "lambda_policy" {

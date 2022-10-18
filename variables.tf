@@ -17,7 +17,7 @@ variable "retention_weekly_backups" {
 variable "hour_for_backup" {
   type        = number
   description = "hour of the day to run the backup"
-  default = 1
+  default     = 1
 }
 
 variable "weekly_backup_day" {
@@ -40,19 +40,19 @@ variable "cloudwatch_log_group_retention" {
 variable "sns-subscription-email" {
   type        = list(string)
   description = "list of email addresses to subscribe to backup failed sns topic"
-  default = []
+  default     = []
 }
 
 variable "sns-subscription-sqs" {
   type        = list(string)
   description = "list of sqs queues to subscribe to backup failed sns topic"
-  default = []
+  default     = []
 }
 
 variable "environment" {
   type        = string
   description = "environment where this module will be deployed"
-  default = ""
+  default     = ""
 }
 
 variable "parent_tags" {
