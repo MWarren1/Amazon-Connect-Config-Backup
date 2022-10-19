@@ -1,7 +1,3 @@
-# TO DO
-
-- clean up python code and add comments
-- Documentation - confluence
 # Amazon Connect Config Backup
 
 This terraform module deploys everything to backup amazon connect config. a lambda which is scheduled to run daily and weekly backup jobs that backup all amazon instances in the account in which it is deployed. It will backup the following configurations:
