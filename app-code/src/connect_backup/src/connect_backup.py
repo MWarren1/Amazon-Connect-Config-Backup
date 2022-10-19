@@ -56,6 +56,7 @@ def lambda_handler(event, context):
     instances = instances_raw['InstanceSummaryList']
 
     instances_num = len(instances)
+    # used so that folder is only created for contact flows on the first instance
     print('\nNumber of Connect Instances : ' + str(instances_num))
 
     for instance in instances:
@@ -333,8 +334,12 @@ def lambda_handler(event, context):
         contact_flows_backedup_num = 0
         contact_flows_not_backedup = {}
         contact_flows_not_backedup_num = 0
-        # create folder for contact flows
-        os.mkdir('/tmp/contact_flows')
+        
+        # create folder for contact flows if it doesnt exsist
+        contact_flow_folder_path = '/tmp/contact_flows'
+        folder_exists = os.path.exists(contact_flow_folder_path)
+        if not folder_exists:
+            os.mkdir(contact_flow_folder_path)
 
         for contact_flow in contact_flow_list:
             get_contact_flow_details = 'successful'
