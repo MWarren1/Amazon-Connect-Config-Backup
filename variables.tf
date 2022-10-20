@@ -55,6 +55,12 @@ variable "sns-subscription-sqs" {
   default     = []
 }
 
+variable "encyrpt_sns" {
+  type        = bool
+  description = "should the sns be encrypted?"
+  default     = false
+}
+
 variable "environment" {
   type        = string
   description = "environment where this module will be deployed"
