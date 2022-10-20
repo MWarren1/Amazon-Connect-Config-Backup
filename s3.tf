@@ -61,3 +61,31 @@ resource "aws_s3_bucket_public_access_block" "connect_backup" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+resource "aws_s3_bucket_policy" "connect_backup" {
+  bucket = aws_s3_bucket.connect_backup.id
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Id": "PutObjPolicy",
+  "Statement": [
+    {
+      "Sid": "AllowSSLRequestsOnly",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:*",
+      "Resource": [
+          "arn:aws:s3:::${var.bucket_name}/*",
+          "arn:aws:s3:::${var.bucket_name}"
+      ],
+      "Condition": {
+          "Bool": {
+              "aws:SecureTransport": "false"
+          }
+      }
+    }
+  ]
+}
+POLICY
+
+}
