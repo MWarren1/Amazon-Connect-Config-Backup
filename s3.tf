@@ -75,8 +75,8 @@ resource "aws_s3_bucket_policy" "connect_backup" {
       "Principal": "*",
       "Action": "s3:*",
       "Resource": [
-          "arn:aws:s3:::${aws_s3_bucket.main.id}/*",
-          "arn:aws:s3:::${aws_s3_bucket.main.id}"
+          "arn:aws:s3:::${aws_s3_bucket.connect_backup.id}/*",
+          "arn:aws:s3:::${aws_s3_bucket.connect_backup.id}"
       ],
       "Condition": {
           "Bool": {
