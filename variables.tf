@@ -4,6 +4,12 @@ variable "s3_name_prefix" {
   default     = ""
 }
 
+variable "log_bucket_name" {
+  type        = string
+  description = "logging bucket used by connect backup bucket"
+  default     = ""
+}
+
 variable "retention_daily_backups" {
   type        = number
   description = "number of days to keep daily backups"
@@ -47,6 +53,12 @@ variable "sns-subscription-sqs" {
   type        = list(string)
   description = "list of sqs queues to subscribe to backup failed sns topic"
   default     = []
+}
+
+variable "encyrpt_sns" {
+  type        = bool
+  description = "should the sns be encrypted?"
+  default     = false
 }
 
 variable "environment" {

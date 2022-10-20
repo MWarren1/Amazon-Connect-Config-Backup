@@ -21,11 +21,13 @@ summary of what it creates:
 ## Configuration
 
 - `s3_name_prefix` - Optional - Prefix to be added to s3 bucket name. Default: `""`
+- `log_bucket_name` - Optional - Logging bucket used by connect backup bucket. Default: `""`
 - `retention_daily_backups` - Required - Number of days to keep daily backups.
 - `retention_weekly_backups` - Required - Number of weeks to keep weekly backups
 - `hour_for_backup` - Optional - Hour of the day to run the backup. Default: `1`
 - `weekly_backup_day` - Optional - Day to do the weekly back up, first 3 letters in of the day in caps. Default: `SUN`
 - `cloudwatch_log_group_retention` - Optional - Number of days to keep lambda logs. Default: `180`
+- `encyrpt_sns` - Optional - Should the sns be encrypted?. Default: `false`
 - `sns-subscription-email` - Optional - List of email addresses to subscribe to backup failed sns topic. Default: `[]`
 - `sns-subscription-sqs` - Optional - List of sqs queues to subscribe to backup failed sns topic. Default: `[]`
 - `environment` - Optional - Environment where this module will be deployed. Default: `""`
