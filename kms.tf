@@ -11,7 +11,7 @@ resource "aws_kms_key" "sns" {
             "Sid": "Enable IAM User Permissions",
             "Effect": "Allow",
             "Principal": {
-                "AWS": "arn:aws:iam::119511693873:root"
+                "AWS": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
             },
             "Action": "kms:*",
             "Resource": "*"
