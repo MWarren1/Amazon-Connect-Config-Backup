@@ -3,7 +3,7 @@ resource "aws_sns_topic" "topic" {
   count = (length(var.sns-subscription-email) + length(var.sns-subscription-sqs)) > 0 ? 1 : 0
 
   name_prefix       = var.environment == "" ? "amazon-connect-backup-alarm-" : "amazon-connect-backup-alarm-${var.environment}-"
-  kms_master_key_id = var.encyrpt_sns ? aws_kms_key.sns[0].key_id : null
+  kms_master_key_id = var.encyrpt_sns ? aws_kms_key.sns[0].arn : null
   tags              = var.parent_tags
 }
 
