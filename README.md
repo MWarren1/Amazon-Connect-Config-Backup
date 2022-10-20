@@ -21,6 +21,7 @@ summary of what it creates:
 ## Configuration
 
 - `s3_name_prefix` - Optional - Prefix to be added to s3 bucket name. Default: `""`
+- `log_bucket_name` - Optional - Logging bucket used by connect backup bucket. Default: `""`
 - `retention_daily_backups` - Required - Number of days to keep daily backups.
 - `retention_weekly_backups` - Required - Number of weeks to keep weekly backups
 - `hour_for_backup` - Optional - Hour of the day to run the backup. Default: `1`

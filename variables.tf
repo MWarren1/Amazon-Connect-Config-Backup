@@ -4,6 +4,12 @@ variable "s3_name_prefix" {
   default     = ""
 }
 
+variable "log_bucket_name" {
+  type        = string
+  description = "logging bucket used by connect backup bucket"
+  default     = ""
+}
+
 variable "retention_daily_backups" {
   type        = number
   description = "number of days to keep daily backups"
