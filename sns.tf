@@ -2,9 +2,9 @@
 resource "aws_sns_topic" "topic" {
   count = (length(var.sns-subscription-email) + length(var.sns-subscription-sqs)) > 0 ? 1 : 0
 
-  name_prefix = var.environment == "" ? "amazon-connect-backup-alarm-" : "amazon-connect-backup-alarm-${var.environment}-"
+  name_prefix       = var.environment == "" ? "amazon-connect-backup-alarm-" : "amazon-connect-backup-alarm-${var.environment}-"
   kms_master_key_id = "alias/aws/sns"
-  tags        = var.parent_tags
+  tags              = var.parent_tags
 }
 
 # subscribes email addresses to sns topic
