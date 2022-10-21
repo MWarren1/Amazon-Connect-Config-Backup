@@ -1,8 +1,9 @@
 resource "aws_kms_key" "sns" {
   count = var.encyrpt_sns ? 1 : 0
 
-  description = "amazon connect backup - used for sns encryption"
-  policy      = <<POLICY
+  description         = "amazon connect backup - used for sns encryption"
+  enable_key_rotation = true
+  policy              = <<POLICY
   {
     "Version": "2012-10-17",
     "Id": "key-default-1",
