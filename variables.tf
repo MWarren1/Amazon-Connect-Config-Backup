@@ -63,7 +63,7 @@ variable "encyrpt_sns" {
 
 variable "object_lock_enabled" {
   type        = bool
-  description = "should object lock be enabled?"
+  description = "should object lock be enabled? Changing this will cause the buckets to be destroyed and recreated"
   default     = false
 }
 

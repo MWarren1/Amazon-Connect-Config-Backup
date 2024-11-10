@@ -31,7 +31,7 @@ summary of what it creates:
 - `encyrpt_sns` - Optional - Should the sns be encrypted?. Default: `false`
 - `sns-subscription-email` - Optional - List of email addresses to subscribe to backup failed sns topic. Default: `[]`
 - `sns-subscription-sqs` - Optional - List of sqs queues to subscribe to backup failed sns topic. Default: `[]`
-- `object_lock_enabled` - Optional - should object lock be enabled?. Default: `false`
+- `object_lock_enabled` - Optional - should object lock be enabled? Changing this will cause the buckets to be destroyed and recreated. Default: `false`
 - `object_lock_mode` - Optional - object lock mode. value must be `GOVERNANCE` or `COMPLIANCE`. Default `GOVERNANCE`
 - `environment` - Optional - Environment where this module will be deployed. Default: `""`
 - `parent_tags` - Optional - Map of tags to be applied to all resources. Default: `{}`
