@@ -77,7 +77,7 @@ resource "aws_s3_bucket_versioning" "connect_backup_weekly" {
 resource "aws_s3_bucket_object_lock_configuration" "connect_backup_weekly" {
   count = var.object_lock_enabled ? 1 : 0
 
-  bucket              = aws_s3_bucket.connect_backup_daily.id
+  bucket              = aws_s3_bucket.connect_backup_weekly.id
   object_lock_enabled = "Enabled"
   rule {
     default_retention {
