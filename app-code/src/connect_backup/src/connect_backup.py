@@ -31,7 +31,8 @@ def s3_upload(filename, backup_type, s3_bucket, boto_s3):
 
 def lambda_handler(event, context):
     ### getting enviromental variables###
-    OUTPUT_S3_BUCKET = os.environ['OUTPUT_S3_BUCKET']
+    DAILY_BACKUP_S3_BUCKET = os.environ['DAILY_BACKUP_S3_BUCKET']
+    WEEKLY_BACKUP_S3_BUCKET = os.environ['WEEKLY_BACKUP_S3_BUCKET']
 
     try:
         backup_type = event['backup-type']
@@ -42,6 +43,14 @@ def lambda_handler(event, context):
 
     print('\nBackup Type : ' + backup_type + '    @ ' + current_date)
 
+    # define output bucket
+    if backup_type == 'daily':
+        OUTPUT_S3_BUCKET = DAILY_BACKUP_S3_BUCKET
+    elif backup_type == 'weekly':
+        OUTPUT_S3_BUCKET = WEEKLY_BACKUP_S3_BUCKET
+    else:
+        OUTPUT_S3_BUCKET = DAILY_BACKUP_S3_BUCKET
+    
     # Initiate boto3 clients
     config = Config(
         retries = {

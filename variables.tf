@@ -61,6 +61,22 @@ variable "encyrpt_sns" {
   default     = false
 }
 
+variable "object_lock_enabled" {
+  type        = bool
+  description = "should object lock be enabled?"
+  default     = false
+}
+
+variable "object_lock_mode" {
+  type        = string
+  description = "object lock mode"
+  default     = "GOVERNANCE"
+  validation {
+    condition     = var.object_lock_mode == "GOVERNANCE" || var.object_lock_mode == "COMPLIANCE"
+    error_message = "The object_lock_mode value must be GOVERNANCE or COMPLIANCE"
+  }
+}
+
 variable "environment" {
   type        = string
   description = "environment where this module will be deployed"
