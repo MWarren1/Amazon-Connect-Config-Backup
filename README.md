@@ -9,13 +9,14 @@ This terraform module deploys everything to backup amazon connect config. a lamb
 - Routing Profiles
 - Security Profiles
 - Contact Flows (Only Published Contact Flows)
+- Agents - In both json and csv format
 
 summary of what it creates:
 
 - Lambda
 - IAM role for Lambda
 - Event Rules for daily and weekly jobs  
-- S3 Bucket to store backups
+- S3 Buckets to store backups
 - SNS Topic and Cloudwatch Alarm
 
 ## Configuration
@@ -30,6 +31,8 @@ summary of what it creates:
 - `encyrpt_sns` - Optional - Should the sns be encrypted?. Default: `false`
 - `sns-subscription-email` - Optional - List of email addresses to subscribe to backup failed sns topic. Default: `[]`
 - `sns-subscription-sqs` - Optional - List of sqs queues to subscribe to backup failed sns topic. Default: `[]`
+- `object_lock_enabled` - Optional - should object lock be enabled?. Default: `false`
+- `object_lock_mode` - Optional - object lock mode. value must be `GOVERNANCE` or `COMPLIANCE`. Default `GOVERNANCE`
 - `environment` - Optional - Environment where this module will be deployed. Default: `""`
 - `parent_tags` - Optional - Map of tags to be applied to all resources. Default: `{}`
 
@@ -59,6 +62,8 @@ module "connect-backup" {
   hour_for_backup                = 23
   weekly_backup_day              = "MON"
   cloudwatch_log_group_retention = 365
+  object_lock_enabled            = true
+  object_lock_mode               = "GOVERNANCE"
   environment                    = "prd"
   
   parent_tags = {
