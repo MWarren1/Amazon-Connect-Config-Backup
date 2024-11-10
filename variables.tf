@@ -24,6 +24,13 @@ variable "hour_for_backup" {
   type        = number
   description = "hour of the day to run the backup"
   default     = 1
+  validation {
+    condition = (
+      var.hour_for_backup >= 1 &&
+      var.hour_for_backup <= 24
+    )
+    error_message = "Invalid Range: 1 - 24."
+  }
 }
 
 variable "weekly_backup_day" {
@@ -32,7 +39,7 @@ variable "weekly_backup_day" {
   default     = "SUN"
 
   validation {
-    condition     = var.weekly_backup_day == "MON" || var.weekly_backup_day == "TUE" || var.weekly_backup_day == "WED" || var.weekly_backup_day == "THU" || var.weekly_backup_day == "FRI" || var.weekly_backup_day == "SAT" || var.weekly_backup_day == "SUN"
+    condition     = contains(["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"], var.weekly_backup_day)
     error_message = "The weekly_backup_day value must be MON, TUE, WED, THU, FRI, SAT or SUN"
   }
 }
