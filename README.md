@@ -19,6 +19,23 @@ summary of what it creates:
 - S3 Buckets to store backups
 - SNS Topic and Cloudwatch Alarm
 
+## Upgrading to >v1.0.7
+before upgrading to a version above later than v1.0.7, it is recommended to remove the backup bucket from the terraform state file so no backups are lost. Run the following to confirm what will be removed from the state file.
+```
+module_name=<MODULE NAME HERE>
+terraform state rm --dry-run \
+module.${module_name}.aws_s3_bucket.connect_backup \
+module.${module_name}.aws_s3_bucket_acl.connect_backup \
+module.${module_name}.aws_s3_bucket_lifecycle_configuration.connect_backup \
+module.${module_name}.aws_s3_bucket_logging.connect_backup[0] \
+module.${module_name}.aws_s3_bucket_policy.connect_backup \
+module.${module_name}.aws_s3_bucket_public_access_block.connect_backup \
+module.${module_name}.aws_s3_bucket_server_side_encryption_configuration.connect_backup \
+module.${module_name}.aws_s3_bucket_versioning.connect_backup 
+```
+
+If that is successful and will remove eight resources, then rerun the command without the `--dry-run`
+
 ## Configuration
 
 - `s3_name_prefix` - Optional - Prefix to be added to s3 bucket name. Default: `""`
